@@ -1,0 +1,6 @@
+@MamunTutorial_HostAddress = http://localhost:5276
+
+GET {{MamunTutorial_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
