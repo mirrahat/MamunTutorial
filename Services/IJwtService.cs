@@ -31,6 +31,21 @@ namespace MamunTutorial.Services
             };
 
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            SigningCredentials signingCredential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            JwtSecurityToken tokeGenerator = new JwtSecurityToken(
+
+                _configuration["Jwt:Isuuer"],
+
+                _configuration["Jwt:Isuuer"],
+                claims,
+                 expires: expiration,
+                 signingCredentials: signingCredentials
+                );
+
+            JwtSecurityTokenHandler tokenHandler= new JwtSecurityTokenHandler();
+            tokenHandler.WriteToken(tokenHandler);
+            string token = tokenHandler.WriteToken(tokeGenerator);
 
         }
 
