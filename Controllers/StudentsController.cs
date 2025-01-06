@@ -100,6 +100,25 @@ namespace MamunTutorial.Controllers
             return NoContent();
         }
 
+        [HttpGet("check-unique")]
+        public IActionResult CheckUnique(string email, string phoneNumber)
+        {
+            var studentWithEmail = _context.Students.FirstOrDefault(s => s.Email == email);
+            var studentWithPhone = _context.Students.FirstOrDefault(s => s.PhoneNumber == phoneNumber);
+
+            if (studentWithEmail != null)
+            {
+                return BadRequest("Email is already in use.");
+            }
+            if (studentWithPhone != null)
+            {
+                return BadRequest("Phone number is already in use.");
+            }
+
+            return Ok("Both email and phone number are unique.");
+        }
+
+
         private bool StudentExists(Guid id)
         {
             return _context.Students.Any(e => e.Id == id);

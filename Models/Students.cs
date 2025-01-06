@@ -18,5 +18,14 @@ namespace MamunTutorial.Models
 
         [Required]
         public string ClassName { get; set; }
+
+        // New fields
+        [Required]
+        [Phone] // Validation for phone number
+        public string PhoneNumber { get; set; }
+
+        [Required]
+        [EmailAddress] // Validation for email address
+        public string Email { get; set; }
     }
 }

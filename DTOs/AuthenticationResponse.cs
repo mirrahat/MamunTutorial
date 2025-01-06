@@ -1,9 +1,8 @@
-﻿namespace MamunTutorial.Models
+﻿namespace MamunTutorial.DTOs
 {
     public class AuthenticationResponse
     {
-        public string? Role { get; set; }=string.Empty;
-
+        public string? PersonName { get; set; }
         public string? Email { get; set; }
 
         public string? Token { get; set; }

@@ -5,7 +5,7 @@
 namespace MamunTutorial.Migrations
 {
     /// <inheritdoc />
-    public partial class billing2 : Migration
+    public partial class logsssdd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

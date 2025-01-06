@@ -22,5 +22,7 @@ namespace MamunTutorial.Data
         public DbSet<Billing> Billings { get; set; }
 
         public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<User> UsersInfo { get; set; }
     }
 }
