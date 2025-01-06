@@ -1,5 +1,11 @@
 using MamunTutorial.Data;
+using MamunTutorial.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +29,29 @@ builder.Services.AddCors(options =>
 });
 
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // Consistent scheme for JWT
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters ()
+    {
+        // Configure token validation parameters
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddTransient<IJwtService, JwtService>();
+
 var app = builder.Build();
 
 app.UseCors("AllowSpecificOrigins");
@@ -34,10 +63,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication(); // Enable authentication middleware
+
+app.UseAuthorization();  // Enable authorization middleware
 
 app.MapControllers();
 
