@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MamunTutorial.Data;
 using MamunTutorial.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace MamunTutorial.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class StudentsController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
@@ -22,6 +24,9 @@ namespace MamunTutorial.Controllers
         }
 
         // GET: api/Students
+
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Students>>> GetStudents()
         {
@@ -36,20 +41,19 @@ namespace MamunTutorial.Controllers
 
             if (student == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "Student not found." });
             }
 
             return student;
         }
 
         // PUT: api/Students/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(Guid id, Students student)
         {
             if (id != student.Id)
             {
-                return BadRequest();
+                return BadRequest(new { Message = "Student ID mismatch." });
             }
 
             _context.Entry(student).State = EntityState.Modified;
@@ -62,7 +66,7 @@ namespace MamunTutorial.Controllers
             {
                 if (!StudentExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { Message = "Student not found." });
                 }
                 else
                 {
@@ -74,14 +78,18 @@ namespace MamunTutorial.Controllers
         }
 
         // POST: api/Students
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Students>> PostStudent(Students student)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStudent", new { id = student.Id }, student);
+            return CreatedAtAction(nameof(GetStudent), new { id = student.Id }, student);
         }
 
         // DELETE: api/Students/5
@@ -91,7 +99,7 @@ namespace MamunTutorial.Controllers
             var student = await _context.Students.FindAsync(id);
             if (student == null)
             {
-                return NotFound();
+                return NotFound(new { Message = "Student not found." });
             }
 
             _context.Students.Remove(student);
@@ -100,25 +108,29 @@ namespace MamunTutorial.Controllers
             return NoContent();
         }
 
+
+
+
+
+        // Unique check for email and phone number
         [HttpGet("check-unique")]
         public IActionResult CheckUnique(string email, string phoneNumber)
         {
-            var studentWithEmail = _context.Students.FirstOrDefault(s => s.Email == email);
-            var studentWithPhone = _context.Students.FirstOrDefault(s => s.PhoneNumber == phoneNumber);
+            var errors = new List<string>();
 
-            if (studentWithEmail != null)
-            {
-                return BadRequest("Email is already in use.");
-            }
-            if (studentWithPhone != null)
-            {
-                return BadRequest("Phone number is already in use.");
-            }
+            if (_context.Students.Any(s => s.Email == email))
+                errors.Add("Email is already in use.");
 
-            return Ok("Both email and phone number are unique.");
+            if (_context.Students.Any(s => s.PhoneNumber == phoneNumber))
+                errors.Add("Phone number is already in use.");
+
+            if (errors.Any())
+                return BadRequest(new { Errors = errors });
+
+            return Ok(new { Message = "Both email and phone number are unique." });
         }
 
-
+        // Helper method to check if a student exists
         private bool StudentExists(Guid id)
         {
             return _context.Students.Any(e => e.Id == id);
