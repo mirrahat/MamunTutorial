@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.Scripting;
 using MamunTutorial.DTOs;
 using MamunTutorial.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MamunTutorial.Controllers
 {
@@ -21,6 +22,7 @@ namespace MamunTutorial.Controllers
             _jwtService = jwtService;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginDto)
           {
@@ -49,7 +51,7 @@ namespace MamunTutorial.Controllers
             else {
                 var test = _jwtService.CreateJwtToken(userInfo);
 
-                var authenticationResponse = _jwtService.CreateJwtToken(userInfo);
+                var authenticationResponse = _jwtService.CreateJwtToken(user);
 
               
 
