@@ -22,5 +22,9 @@ namespace MamunTutorial.Models
         [Required]
         [Phone]
         public string PhoneNumber { get; set; } // Phone Number (For dynamic validation)
+
+        public string? RefreshToken { get; set; }
+
+        public DateTime? RefreshTokenExpirationDateTime { get; set; }
     }
 }

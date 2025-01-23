@@ -53,6 +53,9 @@ namespace MamunTutorial.Controllers
 
                 var authenticationResponse = _jwtService.CreateJwtToken(user);
 
+                user.RefreshToken = authenticationResponse.RefreshToken;
+                user.RefreshTokenExpirationDateTime=authenticationResponse.RefreshTokenExpirationDateTime;
+
               
 
                 return Ok(authenticationResponse);
