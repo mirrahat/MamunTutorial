@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace MamunTutorial.Services
 {
@@ -13,7 +14,7 @@ namespace MamunTutorial.Services
         public JwtService(IConfiguration configuration)
         {
             _configuration = configuration;
-            Console.WriteLine("JwtService instantiated."); 
+            Console.WriteLine("JwtService instantiated.");
         }
 
         public AuthenticationResponse CreateJwtToken(User user)
@@ -24,9 +25,9 @@ namespace MamunTutorial.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-              new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+                new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                 new Claim(ClaimTypes.NameIdentifier, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Role)
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -50,7 +51,9 @@ namespace MamunTutorial.Services
                     Token = token,
                     Email = user.Email,
                     Role = user.Role,
-                    Expiration = expiration
+                    Expiration = expiration,
+                    RefreshToken=GenerateRefreshToken(),
+                    RefreshTokenExpirationDateTime= DateTime.Now.AddMinutes(Convert.ToInt32(_configuration["RefreshToken:EXPIRATION_MINUTES"]))
                 };
             }
             catch (Exception ex)
@@ -58,8 +61,16 @@ namespace MamunTutorial.Services
                 Console.WriteLine($"Error creating JWT token: {ex.Message}");
                 throw;
             }
+        }
 
-
+        private string GenerateRefreshToken()
+        {
+            byte[] bytes = new byte[32];
+            using (var randomNumberGenerator = RandomNumberGenerator.Create())
+            {
+                randomNumberGenerator.GetBytes(bytes);
+            }
+            return Convert.ToBase64String(bytes);
         }
     }
 }
