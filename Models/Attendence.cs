@@ -12,6 +12,8 @@ namespace MamunTutorial.Models
         public bool IsPresent { get; set; }
 
         public Guid StudentId { get; set; }
+
+
     }
 
 }

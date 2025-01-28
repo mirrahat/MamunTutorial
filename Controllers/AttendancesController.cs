@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MamunTutorial.Data;
 using MamunTutorial.Models;
+using MamunTutorial.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MamunTutorial.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AttendancesController : ControllerBase
@@ -82,14 +85,38 @@ namespace MamunTutorial.Controllers
 
         // POST: api/Attendances
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // POST: api/Attendances
+        [AllowAnonymous]
+[HttpPost]
         [HttpPost]
-        public async Task<ActionResult<Attendance>> PostAttendance(Attendance attendance)
+        public async Task<IActionResult> PostAttendance([FromBody] List<AttendanceDTO> attendanceList)
         {
-            _context.Attendence.Add(attendance);
+            if (attendanceList == null || !attendanceList.Any())
+            {
+                return BadRequest("Attendance data is required.");
+            }
+
+            // Map AttendanceDTO to Attendance entities and prepare them for insertion
+            var attendanceEntities = attendanceList.Select(dto => new Attendance
+            {
+                AttendenceId = Guid.NewGuid(), // Generate a new GUID for each record
+                StudentId = dto.StudentId,    // Ensure this is correctly passed as a GUID
+                IsPresent = dto.IsPresent,
+               
+                Date = DateTime.UtcNow,  // Example: Add a timestamp if needed
+               Class=dto.SelectedClass
+            }).ToList();
+
+            // Insert into the database
+            await _context.Attendence.AddRangeAsync(attendanceEntities);
+
+            // Save changes to persist data
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAttendance", new { id = attendance.AttendenceId }, attendance);
+            return Ok("Attendance records successfully added.");
         }
+
+
 
         // DELETE: api/Attendances/5
         [HttpDelete("{id}")]
