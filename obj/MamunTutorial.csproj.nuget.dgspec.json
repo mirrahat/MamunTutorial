@@ -49,6 +49,18 @@
               "target": "Package",
               "version": "[4.0.3, )"
             },
+            "HotChocolate.AspNetCore": {
+              "target": "Package",
+              "version": "[14.3.0, )"
+            },
+            "HotChocolate.Data.MongoDb": {
+              "target": "Package",
+              "version": "[14.3.0, )"
+            },
+            "HotChocolate.Types": {
+              "target": "Package",
+              "version": "[14.3.0, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.10.0, )"
@@ -83,6 +95,14 @@
               "target": "Package",
               "version": "[8.0.7, )"
             },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
@@ -90,6 +110,10 @@
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[7.7.1, )"
+            },
+            "System.Net.Http": {
+              "target": "Package",
+              "version": "[4.3.4, )"
             }
           },
           "imports": [
