@@ -122,6 +122,8 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles();
+
 
 app.MapControllers();
 
