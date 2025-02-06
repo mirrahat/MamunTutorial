@@ -106,6 +106,7 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(int.Parse(port));
 });
 
+builder.WebHost.UseWebRoot("wwwroot");
 var app = builder.Build();
 
 // Configure middleware
