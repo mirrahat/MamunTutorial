@@ -100,13 +100,7 @@ builder.Services.AddAuthorization(options => { });
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddTransient<IJwtService, JwtService>();
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(int.Parse(port));
-});
 
-builder.WebHost.UseWebRoot("wwwroot");
 var app = builder.Build();
 
 // Configure middleware
@@ -123,8 +117,6 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseStaticFiles();
-
 
 app.MapControllers();
 
