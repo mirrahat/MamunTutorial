@@ -7,11 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MamunTutorial", "MamunTutor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI MATH GENERATOR SHAT", "..\AI MATH GENERATOR SHAT\AI MATH GENERATOR SHAT.csproj", "{9CE9592F-D68F-4ED9-B272-130875E935B0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "wwwroot", "wwwroot", "{DBA87EC7-F1A7-4E33-9E3E-879943FDF5F5}"
-	ProjectSection(SolutionItems) = preProject
-		index.html = index.html
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
