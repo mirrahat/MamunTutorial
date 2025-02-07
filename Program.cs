@@ -104,15 +104,20 @@ builder.Services.AddTransient<IJwtService, JwtService>();
 var app = builder.Build();
 
 // Configure middleware
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+
 
 // Force app to listen on Azure's assigned port
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://*:{port}");
+if (!app.Environment.IsDevelopment())
+{
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    app.Urls.Add($"http://*:{port}");
+}
+
+
+
 app.MapGet("/", () => "Hello! This is MyAspNetBackend API.");
 
 app.UseHttpsRedirection();
